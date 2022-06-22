@@ -1,9 +1,11 @@
-const { spawn } = require("child_process");
+const {spawn} = require("child_process");
 const path = require("path");
 const cron = require("node-cron");
 const fs = require("fs");
 const EventEmitter = require("events");
-const { program } = require("commander");
+const {program} = require("commander");
+
+require("dotenv").config();
 
 const getOptionsFromCommand = () => {
   program
@@ -14,13 +16,17 @@ const getOptionsFromCommand = () => {
     .option("-c, --cron <cron>", "Cron expression")
     .parse();
 
-  const { uri, db, path, cron } = program.opts();
-  return { uri, dbName: db, backupPath: path, cronExpression: cron };
+  const {uri, db, path, cron} = program.opts();
+  return {uri, dbName: db, backupPath: path, cronExpression: cron};
 };
 
-function backupMongoDB({ uri = "mongodb://localhost:27017/", dbName, backupPath }) {
-  if(!dbName ) throw new Error("dbName is not set") 
-  if(!backupPath ) throw new Error("backupPath is not set") 
+function backupMongoDB({
+  uri = "mongodb://localhost:27017/",
+  dbName,
+  backupPath,
+}) {
+  if (!dbName) throw new Error("dbName is not set");
+  if (!backupPath) throw new Error("backupPath is not set");
   createBackupDirectory(backupPath);
 
   const mongodump = spawn("mongodump", [
@@ -53,19 +59,33 @@ function createBackupDirectory(backupPath) {
 
 // opts: { uri, cronExpression, dbName, backupPath }
 function autoBackupMongoDB(opts) {
-  const { uri, cronExpression, dbName, backupPath } =
+  const {uri, cronExpression, dbName, backupPath} =
     opts || getOptionsFromCommand();
   const eventEmitter = new EventEmitter();
-  
+
   const task = cron.schedule(cronExpression, (now) => {
-    backupMongoDB({ uri, dbName, backupPath });
+    backupMongoDB({uri, dbName, backupPath});
     eventEmitter.emit("backup", now);
   });
 
-  return { ...eventEmitter, task };
+  return {...eventEmitter, task};
 }
 
-exports.autoBackupMongoDB = autoBackupMongoDB;
-exports.backupMongoDB = backupMongoDB;
+// autoBackupMongoDB({
+//   uri: process.env.MONGODB_URI || "mongodb://localhost:27017",
+//   backupPath: process.env.BACKUP_PATH || "./backups",
+//   dbName: process.env.DATABASE_NAME,
+//   cronExpression: process.env.CRONEXPRESSION || "59 11 * * *",
+// });
 
-exports = autoBackupMongoDB;
+autoBackupMongoDB({
+  uri: "mongodb://localhost:2717,localhost:2727,localhost:2737/?replicaSet=test",
+  backupPath: "./backups/a.gzip",
+  dbName: "university",
+  cronExpression: "*/15 * * * * *",
+});
+
+// exports.autoBackupMongoDB = autoBackupMongoDB;
+// exports.backupMongoDB = backupMongoDB;
+
+// exports = autoBackupMongoDB;
