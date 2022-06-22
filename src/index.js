@@ -80,7 +80,7 @@ function autoBackupMongoDB(opts) {
 
 autoBackupMongoDB({
   uri: "mongodb://localhost:2717,localhost:2727,localhost:2737/?replicaSet=test",
-  backupPath: "./backups/a.gzip",
+  backupPath: "./backups/a.archive",
   dbName: "university",
   cronExpression: "*/15 * * * * *",
 });
