@@ -1,5 +1,6 @@
 import path from "path";
 import autoBackupMongoDB from "./utils/autoBackupMongoDB";
+import mongoose from "mongoose";
 
 require("dotenv").config();
 
@@ -10,9 +11,11 @@ function getBackupPath() {
     : path.join(process.cwd(), "backups", filename);
 }
 
-autoBackupMongoDB({
-  uri: process.env.MONGODB_URI || "mongodb://localhost:27017",
-  backupPath: getBackupPath(),
-  dbName: process.env.DATABASE_NAME,
-  cronExpression: process.env.CRONEXPRESSION,
+mongoose.connect("mongodb://localhost:27017", (error) => {
+  autoBackupMongoDB({
+    uri: process.env.MONGODB_URI || "mongodb://localhost:27017/logs",
+    backupPath: getBackupPath(),
+    dbName: process.env.DATABASE_NAME,
+    cronExpression: process.env.CRONEXPRESSION,
+  });
 });

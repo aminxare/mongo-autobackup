@@ -20,6 +20,7 @@
   "dependencies": {
     "commander": "^9.3.0",
     "dotenv": "^16.0.1",
+    "mongoose": "^6.4.1",
     "node-cron": "^3.0.1",
     "uuid": "^8.3.2"
   }

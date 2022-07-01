@@ -32,7 +32,7 @@ const backupMongoDB = ({
 
   const mongodump = spawn("mongodump", [
     `--db=${dbName}`,
-    `--uri=${uri}`,
+    // `--uri=${uri}`,
     `--archive=${backupPath}`,
     "--gzip",
   ]);
