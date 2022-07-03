@@ -11,9 +11,11 @@ function getBackupPath() {
     : path.join(process.cwd(), "backups", filename);
 }
 
-mongoose.connect("mongodb://localhost:27017", (error) => {
+const mongodbUri = `mongodb://localhost:27017/${process.env.DATABASE_NAME}`;
+
+mongoose.connect(mongodbUri, (error) => {
   autoBackupMongoDB({
-    uri: process.env.MONGODB_URI || "mongodb://localhost:27017/logs",
+    uri: process.env.MONGODB_URI || mongodbUri,
     backupPath: getBackupPath(),
     dbName: process.env.DATABASE_NAME,
     cronExpression: process.env.CRONEXPRESSION,

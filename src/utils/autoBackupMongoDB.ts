@@ -13,12 +13,18 @@ const autoBackupMongoDB = ({ uri, cronExpression, dbName, backupPath }) => {
       backupPath,
       options: {
         onError: (err) => console.log(err),
-        onExit:(code, signal) => {
+        onExit: (code, signal) => {
+          const date = new Date().toISOString();
+          const text = `date: ${date}, Code: ${code}, signal: ${signal}`;
           new logger({
             name: "backup",
-            text: `Code: ${code}, signal: ${signal}`
-          }).save().catch(console.log)
-          console.log(`Code: ${code}, signal: ${signal}`)},
+            text,
+          })
+            .save()
+            .catch(console.log);
+
+          console.log(text);
+        },
       },
     });
   });
