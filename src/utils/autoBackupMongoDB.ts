@@ -1,7 +1,7 @@
 import * as cron from "node-cron";
 import EventEmitter from "events";
 import backupMongoDB from "./backupMongoDB";
-import logger from "./logger";
+import log from "./log";
 
 const autoBackupMongoDB = ({ uri, cronExpression, dbName, backupPath }) => {
   const eventEmitter = new EventEmitter();
@@ -16,13 +16,7 @@ const autoBackupMongoDB = ({ uri, cronExpression, dbName, backupPath }) => {
         onExit: (code, signal) => {
           const date = new Date().toISOString();
           const text = `date: ${date}, Code: ${code}, signal: ${signal}`;
-          new logger({
-            name: "backup",
-            text,
-          })
-            .save()
-            .catch(console.log);
-
+          log("backup", text);
           console.log(text);
         },
       },
