@@ -1,4 +1,4 @@
-const {Schema, model} = require('mongoose')
+import { Schema, model } from 'mongoose';
 
 const loggerSchema = new Schema({
     name: {
@@ -19,8 +19,8 @@ loggerSchema.pre("save",function(next){
     next();
 })
 
-function createLogger(logCollectionName){
+function createLogger(logCollectionName: string){
     return model(logCollectionName, loggerSchema)
 }
 
-module.exports = createLogger;
+export default createLogger;

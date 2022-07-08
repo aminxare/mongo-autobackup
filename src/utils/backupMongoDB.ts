@@ -1,21 +1,32 @@
-const { spawn } = require("child_process");
-const EventEmitter = require("events");
-const fs = require("fs");
-const path = require("path");
+import { ChildProcessWithoutNullStreams, spawn } from "child_process";
+import EventEmitter from "events";
+import fs from "fs";
+import path from "path";
+
+interface options {
+  uri: string;
+  dbName: string;
+  backupPath: string;
+}
 
 // function create backups directory if it doesn't exist
-function createBackupDirectory(backupPath) {
+function createBackupDirectory(backupPath: string) {
   const backupDirectory = path.dirname(backupPath);
   if (!fs.existsSync(backupDirectory)) {
     fs.mkdirSync(backupDirectory);
   }
 }
 
-const backupMongoDBFn = function ({
-  uri = "mongodb://localhost:27017/",
-  dbName,
-  backupPath,
-}) {
+const backupMongoDBFn = function (
+  this: EventEmitter & {
+    backup: ({
+      uri,
+      dbName,
+      backupPath,
+    }: options) => ChildProcessWithoutNullStreams;
+  },
+  { uri = "mongodb://localhost:27017/", dbName, backupPath }: options
+) {
   if (!dbName) throw new Error("dbName is not set");
   if (!backupPath) throw new Error("backupPath is not set");
   createBackupDirectory(backupPath);
@@ -42,4 +53,4 @@ const backuper = {
   backup: backupMongoDBFn,
 };
 
-module.exports = Object.assign(new EventEmitter(), backuper);
+export default Object.assign(new EventEmitter(), backuper);

@@ -1,14 +1,14 @@
 "use strict";
-const path = require("path");
-const mongoose = require("mongoose");
-const autoBackupMongoDB = require("./utils/autoBackupMongoDB.js");
+import path from "path";
+import mongoose from "mongoose";
+import autoBackupMongoDB from "./utils/autoBackupMongoDB.js";
 
 require("dotenv").config();
 
-function getBackupPath() {
+function getBackupPath():string {
   const filename = `${new Date().toISOString().split("T")[0]}.archive`;
-  return path.extname(process.env.BACKUP_PATH) !== ""
-    ? process.env.BACKUP_PATH
+  return path.extname(process.env.BACKUP_PATH!) !== ""
+    ? process.env.BACKUP_PATH!
     : path.join(process.cwd(), "backups", filename);
 }
 
@@ -23,7 +23,7 @@ mongoose.connect(mongodbUri, (error) => {
   autoBackupMongoDB({
     uri: mongodbUri,
     backupPath: getBackupPath(),
-    dbName: process.env.DATABASE_NAME,
-    cronExpression: process.env.CRONEXPRESSION,
+    dbName: process.env.DATABASE_NAME!,
+    cronExpression: process.env.CRONEXPRESSION!,
   });
 });
