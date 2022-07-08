@@ -1,9 +1,9 @@
-import createLogger from "../models/log";
+const createLogger =require("../models/log.js");
 
 const log = async (
-  name: string,
-  text: string,
-  collectionName: string = "log"
+  name,
+  text,
+  collectionName = "log"
 ) => {
   const Logger = createLogger(collectionName);
   return await new Logger({
@@ -12,4 +12,4 @@ const log = async (
   }).save();
 };
 
-export default log;
+module.exports = log;
