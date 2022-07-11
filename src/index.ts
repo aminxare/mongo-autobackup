@@ -7,12 +7,18 @@ require("dotenv").config();
 
 function getBackupPath():string {
   const filename = `${new Date().toISOString().split("T")[0]}.archive`;
-  return path.extname(process.env.BACKUP_PATH!) !== ""
-    ? process.env.BACKUP_PATH!
-    : path.join(process.cwd(), "backups", filename);
+  const backupPath = process.env.BACKUP_PATH!;
+
+  return path.extname(backupPath) !== ""
+    ? backupPath
+    : path.join(backupPath || process.cwd() +"backups", filename);
 }
 
-const mongodbUri = `mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}/${process.env.DATABASE_NAME}`;
+const MONGODB_PORT = process.env.MONGODB_PORT || 27017;
+const MONGODB_HOST = process.env.MONGODB_HOST || 'localhost'
+const CRONEXPRESSION = process.env.CRONEXPRESSION!;
+
+const mongodbUri = `mongodb://${MONGODB_HOST}:${MONGODB_PORT}/${process.env.DATABASE_NAME}`;
 
 mongoose.connect(mongodbUri, (error) => {
   if(error){
@@ -24,6 +30,6 @@ mongoose.connect(mongodbUri, (error) => {
     uri: mongodbUri,
     backupPath: getBackupPath(),
     dbName: process.env.DATABASE_NAME!,
-    cronExpression: process.env.CRONEXPRESSION!,
+    cronExpression: CRONEXPRESSION,
   });
 });
