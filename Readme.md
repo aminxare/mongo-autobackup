@@ -29,7 +29,7 @@ CRONEXPRESSION:
 
 installation:
     
-    ```
+    ```bash
 
       npm i
 
@@ -37,9 +37,19 @@ installation:
 
 run: 
 
-    ```
+    ```bash
 
         npm start
 
 
     ```
+
+### How to restore backups: 
+
+```bash
+
+mongorestore --uri <URI> --nsInclude <DATABASENAME>.<COLLECTION-NAME> --drop --gzip --archive=<PATH-TO-BACKUP>
+
+mongorestore --uri 'mongodb://localhost:27017' --nsInclude mydatabase.* --drop --gzip --archive='./backups/2022-07-25.archive'
+
+```

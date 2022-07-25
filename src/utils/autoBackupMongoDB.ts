@@ -13,7 +13,7 @@ const autoBackupMongoDB = ({ uri, cronExpression, dbName, backupPath }:options) 
   backupMongoDB.on("backupend", ({ date, code, signal }) => {
     const dateISO = date.toISOString();
     const text = `date: ${dateISO}, Code: ${code}, signal: ${signal}`;
-
+    console.log(text)
     log("backup", text);
   });
 
